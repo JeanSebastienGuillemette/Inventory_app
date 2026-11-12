@@ -6,6 +6,9 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Pressable onPress={() => router.push("/inventory")}>
+        <Text>Inventory</Text>
+      </Pressable>
       <Pressable onPress={() => router.push("/about")}>
         <Text>About</Text>
       </Pressable>
