@@ -1,9 +1,14 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function Index() {
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Pressable onPress={() => router.push("/about")}>
+        <Text>About</Text>
+      </Pressable>
     </View>
   );
 }
