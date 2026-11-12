@@ -2,12 +2,14 @@ import { useCallback, useState } from "react";
 import {
   Alert,
   FlatList,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
+import ComponentCard from "@/components/ComponentCard";
 import { Component, deleteComponent, getAllComponents } from "@/db/database";
 
 export default function Inventory() {
@@ -21,22 +23,30 @@ export default function Inventory() {
   // Reload every time the screen comes back into view (after add/edit).
   useFocusEffect(loadComponents);
 
+  async function removeComponent(id: number) {
+    await deleteComponent(id);
+    loadComponents();
+  }
+
   function confirmDelete(item: Component) {
-    Alert.alert(
-      "Delete part",
-      `Delete "${item.name}"? This cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            await deleteComponent(item.id);
-            loadComponents();
-          },
-        },
-      ],
-    );
+    const message = `Delete "${item.name}"? This cannot be undone.`;
+
+    // Alert buttons are not supported on web: use the browser's confirm dialog.
+    if (Platform.OS === "web") {
+      if (window.confirm(message)) {
+        removeComponent(item.id);
+      }
+      return;
+    }
+
+    Alert.alert("Delete part", message, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: () => removeComponent(item.id),
+      },
+    ]);
   }
 
   return (
@@ -45,21 +55,13 @@ export default function Inventory() {
         data={components}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.rowText}>
-              {item.name} ({item.quantity}) - {item.price.toFixed(2)} $
-            </Text>
-            <Pressable
-              onPress={() =>
-                router.push({ pathname: "/form", params: { id: item.id } })
-              }
-            >
-              <Text>Edit</Text>
-            </Pressable>
-            <Pressable onPress={() => confirmDelete(item)}>
-              <Text>Delete</Text>
-            </Pressable>
-          </View>
+          <ComponentCard
+            component={item}
+            onEdit={() =>
+              router.push({ pathname: "/form", params: { id: item.id } })
+            }
+            onDelete={() => confirmDelete(item)}
+          />
         )}
         ListEmptyComponent={<Text>No parts yet.</Text>}
       />
@@ -74,7 +76,5 @@ export default function Inventory() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  row: { flexDirection: "row", alignItems: "center", gap: 12 },
-  rowText: { flex: 1 },
+  container: { flex: 1, padding: 16, backgroundColor: "#f1f5f9" },
 });
