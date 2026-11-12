@@ -1,5 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import AppButton from "@/components/AppButton";
+import { colors, getCategoryColor } from "@/constants/colors";
 import { Component } from "@/db/database";
+import { formatMoney } from "@/utils/format";
 
 type Props = {
   component: Component;
@@ -9,81 +12,110 @@ type Props = {
 
 export default function ComponentCard({ component, onEdit, onDelete }: Props) {
   const total = component.price * component.quantity;
+  const categoryColor = getCategoryColor(component.category);
 
   return (
-    <View style={styles.card}>
+    // The whole card is a big touch target that opens the edit form.
+    <Pressable
+      onPress={onEdit}
+      style={({ pressed }) => [
+        styles.card,
+        { borderLeftColor: categoryColor.main },
+        pressed && styles.pressed,
+      ]}
+    >
       <View style={styles.header}>
         <Text style={styles.name}>{component.name}</Text>
         {component.category ? (
-          <Text style={styles.category}>{component.category}</Text>
+          <Text
+            style={[
+              styles.category,
+              {
+                color: categoryColor.main,
+                backgroundColor: categoryColor.light,
+              },
+            ]}
+          >
+            {component.category}
+          </Text>
         ) : null}
       </View>
 
-      <Text style={styles.detail}>
-        {component.quantity} × {component.price.toFixed(2)} $ ={" "}
-        <Text style={styles.total}>{total.toFixed(2)} $</Text>
-      </Text>
-      <Text style={styles.detail}>
-        Bought {component.purchaseDate}
-        {component.location ? ` · ${component.location}` : ""}
+      <View style={styles.numbers}>
+        <Text style={styles.detail}>
+          {component.quantity} × {formatMoney(component.price)}
+        </Text>
+        <Text style={styles.total}>{formatMoney(total)}</Text>
+      </View>
+
+      <Text style={styles.meta}>
+        Acheté le {component.purchaseDate}
+        {component.location ? `  ·  ${component.location}` : ""}
       </Text>
 
       <View style={styles.actions}>
-        <Pressable style={styles.button} onPress={onEdit}>
-          <Text style={styles.buttonText}>Edit</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button, styles.deleteButton]}
+        <AppButton
+          title="Modifier"
+          variant="secondary"
+          size="small"
+          onPress={onEdit}
+        />
+        <AppButton
+          title="Supprimer"
+          variant="danger"
+          size="small"
           onPress={onDelete}
-        >
-          <Text style={[styles.buttonText, styles.deleteText]}>Delete</Text>
-        </Pressable>
+        />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 10,
+    backgroundColor: colors.surface,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#e2e8f0",
-    gap: 4,
+    borderColor: colors.border,
+    // Thick colored stripe on the left: the category color.
+    borderLeftWidth: 6,
+    gap: 6,
   },
+  pressed: { opacity: 0.85 },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     gap: 8,
   },
-  name: { fontSize: 16, fontWeight: "bold", flexShrink: 1 },
+  name: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.text,
+    flexShrink: 1,
+  },
   category: {
-    fontSize: 12,
-    color: "#1d4ed8",
-    backgroundColor: "#dbeafe",
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
+    fontSize: 13,
+    fontWeight: "600",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
     overflow: "hidden",
   },
-  detail: { color: "#475569" },
-  total: { fontWeight: "bold", color: "#0f172a" },
+  numbers: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "baseline",
+  },
+  detail: { fontSize: 16, color: colors.textMuted },
+  total: { fontSize: 18, fontWeight: "bold", color: colors.primary },
+  meta: { fontSize: 14, color: colors.textMuted },
   actions: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    gap: 8,
-    marginTop: 6,
+    gap: 10,
+    marginTop: 8,
   },
-  button: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: "#e2e8f0",
-  },
-  buttonText: { fontWeight: "600", color: "#0f172a" },
-  deleteButton: { backgroundColor: "#fee2e2" },
-  deleteText: { color: "#b91c1c" },
 });

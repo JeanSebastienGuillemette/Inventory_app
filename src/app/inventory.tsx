@@ -3,13 +3,15 @@ import {
   Alert,
   FlatList,
   Platform,
-  Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { useFocusEffect, useRouter } from "expo-router";
+import AppButton from "@/components/AppButton";
 import ComponentCard from "@/components/ComponentCard";
+import Screen from "@/components/Screen";
+import { colors } from "@/constants/colors";
 import { Component, deleteComponent, getAllComponents } from "@/db/database";
 
 export default function Inventory() {
@@ -29,7 +31,7 @@ export default function Inventory() {
   }
 
   function confirmDelete(item: Component) {
-    const message = `Delete "${item.name}"? This cannot be undone.`;
+    const message = `Supprimer « ${item.name} » ? Cette action est irréversible.`;
 
     // Alert buttons are not supported on web: use the browser's confirm dialog.
     if (Platform.OS === "web") {
@@ -39,10 +41,10 @@ export default function Inventory() {
       return;
     }
 
-    Alert.alert("Delete part", message, [
-      { text: "Cancel", style: "cancel" },
+    Alert.alert("Supprimer la pièce", message, [
+      { text: "Annuler", style: "cancel" },
       {
-        text: "Delete",
+        text: "Supprimer",
         style: "destructive",
         onPress: () => removeComponent(item.id),
       },
@@ -50,7 +52,15 @@ export default function Inventory() {
   }
 
   return (
-    <View style={styles.container}>
+    <Screen
+      scroll={false}
+      footer={
+        <AppButton
+          title="Ajouter une pièce"
+          onPress={() => router.push("/form")}
+        />
+      }
+    >
       <FlatList
         data={components}
         keyExtractor={(item) => item.id.toString()}
@@ -63,18 +73,23 @@ export default function Inventory() {
             onDelete={() => confirmDelete(item)}
           />
         )}
-        ListEmptyComponent={<Text>No parts yet.</Text>}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text style={styles.emptyTitle}>Aucune pièce pour l’instant</Text>
+            <Text style={styles.emptyText}>
+              Touchez Ajouter une pièce, en bas, pour créer la première.
+            </Text>
+          </View>
+        }
+        contentContainerStyle={styles.list}
       />
-      <Pressable onPress={() => router.push("/form")}>
-        <Text>Add part</Text>
-      </Pressable>
-      <Pressable onPress={() => router.back()}>
-        <Text>Back</Text>
-      </Pressable>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#f1f5f9" },
+  list: { paddingBottom: 16, flexGrow: 1 },
+  empty: { alignItems: "center", marginTop: 48, gap: 6 },
+  emptyTitle: { fontSize: 18, fontWeight: "bold", color: colors.primaryDark },
+  emptyText: { fontSize: 16, color: colors.textMuted, textAlign: "center" },
 });

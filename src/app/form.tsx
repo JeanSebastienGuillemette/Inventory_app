@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import ComponentForm from "@/components/ComponentForm";
+import Screen from "@/components/Screen";
+import { colors } from "@/constants/colors";
 import {
   addComponent,
   Component,
@@ -40,22 +42,24 @@ export default function Form() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Stack.Screen options={{ title: isEdit ? "Edit part" : "Add part" }} />
+    <Screen>
+      <Stack.Screen
+        options={{ title: isEdit ? "Modifier la pièce" : "Ajouter une pièce" }}
+      />
       {notFound ? (
-        <Text>This part no longer exists.</Text>
+        <Text style={styles.message}>Cette pièce n’existe plus.</Text>
       ) : isEdit && component === null ? (
-        <Text>Loading...</Text>
+        <Text style={styles.message}>Chargement…</Text>
       ) : (
         <ComponentForm
           initial={component ?? undefined}
           onSubmit={handleSubmit}
         />
       )}
-    </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16 },
+  message: { fontSize: 16, color: colors.textMuted, textAlign: "center" },
 });
