@@ -16,9 +16,14 @@ export default function Form() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const [component, setComponent] = useState<Component | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (id) getComponentById(Number(id)).then(setComponent);
+    if (!id) return;
+    getComponentById(Number(id)).then((found) => {
+      if (found === null) setNotFound(true);
+      else setComponent(found);
+    });
   }, [id]);
 
   async function handleSubmit(data: NewComponent) {
@@ -32,7 +37,9 @@ export default function Form() {
       <Stack.Screen
         options={{ title: id ? "Modifier la pièce" : "Ajouter une pièce" }}
       />
-      {id && !component ? (
+      {notFound ? (
+        <Text style={styles.message}>Cette pièce n’existe plus.</Text>
+      ) : id && !component ? (
         <Text style={styles.message}>Chargement…</Text>
       ) : (
         <ComponentForm
