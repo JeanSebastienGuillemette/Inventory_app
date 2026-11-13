@@ -1,9 +1,8 @@
-// App color palette (circuit-board green + gold accents), shared by every screen.
 export const colors = {
   primary: "#1f7a4d",
   primaryDark: "#0f3d2e",
   primaryLight: "#dcf2e6",
-  accent: "#c9952b", // gold, like the pads on a circuit board
+  accent: "#c9952b",
   accentLight: "#fbf0d9",
   background: "#eef5f1",
   surface: "#ffffff",
@@ -20,8 +19,6 @@ export const colors = {
 
 type CategoryColor = { main: string; light: string };
 
-// One color per category, so parts are easy to spot in the list.
-// French and English names both work, case does not matter.
 const categoryColors: Record<string, CategoryColor> = {
   mcu: { main: "#2563eb", light: "#dbeafe" },
   capteur: { main: "#7c3aed", light: "#ede9fe" },

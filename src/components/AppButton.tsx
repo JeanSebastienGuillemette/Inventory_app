@@ -46,12 +46,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  // 48 px is the minimum comfortable touch target on Android.
   large: { minHeight: 52, paddingHorizontal: 20 },
   small: { minHeight: 44, paddingHorizontal: 18 },
   primary: {
     backgroundColor: colors.primary,
-    // Soft shadow so the main action stands out.
     shadowColor: colors.primaryDark,
     shadowOpacity: 0.25,
     shadowRadius: 6,

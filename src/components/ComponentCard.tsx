@@ -15,7 +15,6 @@ export default function ComponentCard({ component, onEdit, onDelete }: Props) {
   const categoryColor = getCategoryColor(component.category);
 
   return (
-    // The whole card is a big touch target that opens the edit form.
     <Pressable
       onPress={onEdit}
       style={({ pressed }) => [
@@ -79,7 +78,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: colors.border,
-    // Thick colored stripe on the left: the category color.
     borderLeftWidth: 6,
     gap: 6,
   },

@@ -12,7 +12,6 @@ export default function Index() {
   const [partCount, setPartCount] = useState(0);
   const [totalValue, setTotalValue] = useState(0);
 
-  // Refresh the summary every time Home comes back into view.
   useFocusEffect(
     useCallback(() => {
       getAllComponents().then((rows) => {

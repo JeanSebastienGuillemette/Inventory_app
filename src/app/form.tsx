@@ -15,40 +15,24 @@ import {
 export default function Form() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const isEdit = id !== undefined;
-
   const [component, setComponent] = useState<Component | null>(null);
-  const [notFound, setNotFound] = useState(false);
 
-  // Edit mode: load the part to pre-fill the form.
   useEffect(() => {
-    if (!isEdit) return;
-    getComponentById(Number(id)).then((found) => {
-      if (found === null) {
-        setNotFound(true);
-      } else {
-        setComponent(found);
-      }
-    });
-  }, [id, isEdit]);
+    if (id) getComponentById(Number(id)).then(setComponent);
+  }, [id]);
 
   async function handleSubmit(data: NewComponent) {
-    if (isEdit) {
-      await updateComponent({ ...data, id: Number(id) });
-    } else {
-      await addComponent(data);
-    }
+    if (id) await updateComponent({ ...data, id: Number(id) });
+    else await addComponent(data);
     router.back();
   }
 
   return (
     <Screen>
       <Stack.Screen
-        options={{ title: isEdit ? "Modifier la pièce" : "Ajouter une pièce" }}
+        options={{ title: id ? "Modifier la pièce" : "Ajouter une pièce" }}
       />
-      {notFound ? (
-        <Text style={styles.message}>Cette pièce n’existe plus.</Text>
-      ) : isEdit && component === null ? (
+      {id && !component ? (
         <Text style={styles.message}>Chargement…</Text>
       ) : (
         <ComponentForm

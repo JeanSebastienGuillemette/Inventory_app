@@ -11,14 +11,10 @@ import { colors } from "@/constants/colors";
 
 type Props = {
   children: ReactNode;
-  // false when the content scrolls by itself (e.g. a FlatList).
   scroll?: boolean;
-  // Buttons pinned to the bottom of the screen, always reachable by the thumb.
   footer?: ReactNode;
 };
 
-// Shared screen layout: keeps content above the keyboard and the phone's
-// navigation bar, and limits the width on a computer so it still looks like a phone app.
 export default function Screen({ children, scroll = true, footer }: Props) {
   const insets = useSafeAreaInsets();
   const bottomPadding = Math.max(insets.bottom, 16);

@@ -22,7 +22,6 @@ export default function Inventory() {
     getAllComponents().then(setComponents);
   }, []);
 
-  // Reload every time the screen comes back into view (after add/edit).
   useFocusEffect(loadComponents);
 
   async function removeComponent(id: number) {
@@ -33,7 +32,6 @@ export default function Inventory() {
   function confirmDelete(item: Component) {
     const message = `Supprimer « ${item.name} » ? Cette action est irréversible.`;
 
-    // Alert buttons are not supported on web: use the browser's confirm dialog.
     if (Platform.OS === "web") {
       if (window.confirm(message)) {
         removeComponent(item.id);

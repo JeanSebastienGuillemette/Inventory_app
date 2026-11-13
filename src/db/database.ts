@@ -3,7 +3,7 @@ import * as SQLite from "expo-sqlite";
 export type Component = {
   id: number;
   name: string;
-  purchaseDate: string; // ISO date: YYYY-MM-DD
+  purchaseDate: string;
   price: number;
   quantity: number;
   location: string | null;

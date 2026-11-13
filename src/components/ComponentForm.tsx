@@ -87,7 +87,6 @@ export default function ComponentForm({ initial, onSubmit }: Props) {
         />
       </View>
 
-      {/* Price and quantity side by side: short numeric fields. */}
       <View style={styles.row}>
         <View style={[styles.field, styles.rowItem]}>
           <Text style={styles.label}>Prix unitaire ($) *</Text>

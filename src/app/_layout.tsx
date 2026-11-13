@@ -5,7 +5,6 @@ import { colors } from "@/constants/colors";
 export default function RootLayout() {
   return (
     <>
-      {/* Light icons on the dark green header. */}
       <StatusBar style="light" />
       <Stack
         screenOptions={{
